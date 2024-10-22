@@ -1,24 +1,49 @@
-const { Router } = require("express");
-const { getListarTodos, getListarId, postLaptop, putLaptop, deleteLaptop, generarQr } = require("../controllers/latops");
+const {Router} = require("express")
+const {postInsertar, putModificar, getListar, getListarPorId, putActivar, putDesactivar, generarQr} = require("../controllers/latops")
+const {helperLaptop}= require ('../helpers/latops')
+const {validarCampos} = require('../middleware/validar-campos');
+const {check} = require('express-validator');
+const router = Router()
 
-const router = Router();
+router.post("/",[
+    check("serial","El serial es obligatorio").notEmpty(),
+    check("holder","El id del holder es obligatorio").notEmpty(),
+    check("holder","El id del holder no es valido").isMongoId(),
+    check("state","El estado es obligatorio").notEmpty(),
+    check("state","El estado debe de ser un numero").isNumeric(),
+    validarCampos
+],postInsertar)
 
-// Listar todas las laptops
-router.get("/", getListarTodos);
+router.put("/:id",[
+    check("id","El id no es valido").isMongoId(),
+    check("id","El id no existe").custom(helperLatop.validarId)
+    ,validarCampos
+], putModificar)
 
-// Listar por ID
-router.get("/:id", getListarId);
+router.get("/",getListar)
 
-// Agregar una laptop
-router.post("/", postLaptop);
+router.get("/:id",[
+    check("id","El id no es valido").isMongoId(),
+    check("id","El id no existe").custom(helperLatop.validarId),
+    validarCampos
+], getListarPorId )
 
-// Modificar una laptop
-router.put("/:id", putLaptop);
+router.put("/activate/:id",[
+    check("id","el id no es valido").isMongoId(),
+    check("id","el id no existe").custom(helperLatop.validarId),
+    validarCampos
+], putActivar )
 
-// Eliminar una laptop
-router.delete("/:id", deleteLaptop);
+router.put("/unactivate/:id",[
+    check("id","el id no es valido").isMongoId(),
+    check("id","el id no existe").custom(helperLatop.validarId),
+    validarCampos
+], putDesactivar)
 
-// Generar QR
-router.put("/qr/:serial", generarQr);
+router.put("/qr/:Serial",[
+    check("Serial","El serial no es valido").notEmpty(),
+    check("Serial","El serial no existe").custom(helperLatop.validarSerial),
+    validarCampos
+], generarQr)
 
-module.exports = router;
+module.exports=router  
