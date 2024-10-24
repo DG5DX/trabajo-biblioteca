@@ -2,38 +2,38 @@ const Laptops = require("../models/latops");
 const qrCodigo = require("qrcode")
 
 
-const postInsertar = async (req, res)=>{
+const postInsertar = async (req, res) => {
     try {
-        const {holder, serial, qrcode, state, observations} = req.body;
-        const laptop = new Laptops({holder, serial, qrcode, state, observations});
+        const { holder, serial, qrcode, state, observations } = req.body;
+        const laptop = new Laptops({ holder, serial, qrcode, state, observations });
         await laptop.save()
-        res.json({laptop})
+        res.json({ laptop })
     } catch (error) {
-        res.status(400).json({error:"operacion ha fallado"})
+        res.status(400).json({ error: "operacion ha fallado" })
         console.log(error);
     }
 }
 
 
-const putModificar= async (req,res)=>{
+const putModificar = async (req, res) => {
     try {
-        const {id}= req.params
-        const {holder, serial, qrcode, state, observations} = req.body;
-        const laptop = await Laptops.findByIdAndUpdate(id,{holder, serial, qrcode, state, observations},{new:true});
-        res.json({laptop})
+        const { id } = req.params
+        const { holder, serial, qrcode, state, observations } = req.body;
+        const laptop = await Laptops.findByIdAndUpdate(id, { holder, serial, qrcode, state, observations }, { new: true });
+        res.json({ laptop })
     } catch (error) {
-        res.status(400).json({error:"operacion ha fallado"})
+        res.status(400).json({ error: "operacion ha fallado" })
         console.log(error);
     }
 }
 
 
-const getListar = async (req, res)=>{
+const getListar = async (req, res) => {
     try {
-        const laptops= await Laptops.find();
-        res.json({laptops})
+        const laptops = await Laptops.find();
+        res.json({ laptops })
     } catch (error) {
-        res.status(400).json({error:"operacion ha fallado"})
+        res.status(400).json({ error: "operacion ha fallado" })
         console.log(error);
     }
 }
@@ -41,50 +41,50 @@ const getListar = async (req, res)=>{
 
 
 
-const getListarPorId = async (req, res)=>{
+const getListarPorId = async (req, res) => {
     try {
-        const {id} = req.params
-        const laptops= await Laptops.findById(id)
-        res.json({laptops})
+        const { id } = req.params
+        const laptops = await Laptops.findById(id)
+        res.json({ laptops })
     } catch (error) {
-        res.status(400).json({error:"operacion ha fallado"})
+        res.status(400).json({ error: "operacion ha fallado" })
         console.log(error);
     }
 }
 
 
-const putActivar = async (req, res)=>{
+const putActivar = async (req, res) => {
     try {
-        const {id}= req.params;
-        const laptop = await Laptops.findByIdAndUpdate(id,{state:1},{new: true})
-        res.json({laptop});
+        const { id } = req.params;
+        const laptop = await Laptops.findByIdAndUpdate(id, { state: 1 }, { new: true })
+        res.json({ laptop });
     } catch (error) {
-        res.status(400).json({error:"operacion ha fallado"})
+        res.status(400).json({ error: "operacion ha fallado" })
         console.log(error);
     }
 }
 
-const putDesactivar = async (req, res)=>{
+const putDesactivar = async (req, res) => {
     try {
-        const {id}= req.params;
-        const laptop = await Laptops.findByIdAndUpdate(id,{state:0},{new: true})
-        res.json({laptop});
+        const { id } = req.params;
+        const laptop = await Laptops.findByIdAndUpdate(id, { state: 0 }, { new: true })
+        res.json({ laptop });
     } catch (error) {
-        res.status(400).json({error:"operacion ha fallado"})
+        res.status(400).json({ error: "operacion ha fallado" })
         console.log(error);
     }
 }
 
-const generarQr= async (req, res)=> {
+const generarQr = async (req, res) => {
     try {
-        const {Serial} = req.params;
+        const { Serial } = req.params;
         const QRCodigo = await qrCodigo.toDataURL(Serial);
-        const laptop = await Laptops.findOneAndUpdate({serial:Serial},{qrcode:QRCodigo},{ new:true})
-        res.json({laptop})
+        const laptop = await Laptops.findOneAndUpdate({ serial: Serial }, { qrcode: QRCodigo }, { new: true })
+        res.json({ laptop })
     } catch (error) {
-         res.status(400).json({error:"operacion fallo"})
+        res.status(400).json({ error: "operacion fallo" })
         console.log(error);
     }
 }
 
-module.exports = {postInsertar, putModificar, getListar, getListarPorId, putActivar, putDesactivar, generarQr}
+module.exports = { postInsertar, putModificar, getListar, getListarPorId, putActivar, putDesactivar, generarQr }

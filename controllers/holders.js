@@ -9,7 +9,7 @@ const postHolders = async (req, res) => {
         const encryptedPassword = bcrypt.hashSync(password, 10);
         const holder = new Holders({
             email,
-            password:encryptedPassword,
+            password: encryptedPassword,
             document,
             name,
             rol,
@@ -29,11 +29,11 @@ const postHolders = async (req, res) => {
 const postLogin = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const holder = await Holders.findOne({email});
+        const holder = await Holders.findOne({ email });
         console.log(holder);
-        
+
         if (!holder) {
-            return res.status(400).json({ msg: "Holder / email incorrecto"});
+            return res.status(400).json({ msg: "Holder / email incorrecto" });
         }
         if (holder.state === "0") {
             return res.status(400).json({
@@ -45,7 +45,7 @@ const postLogin = async (req, res) => {
             return res.status(400).json({
                 msg: "Holder / password incorrectos",
             });
-        } 
+        }
         const token = await generarJWT.generarJWT(holder._id);
         res.json({
             holder,
@@ -53,7 +53,7 @@ const postLogin = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        
+
         res.status(500).json({ msg: "algo salio mal hable con el webMaster" });
     }
 };
